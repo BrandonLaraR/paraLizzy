@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Para Mi Amor</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #1a0033 0%, #2d0052 50%, #1a0033 100%);
+      color: #f0f0f0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-attachment: fixed;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    nav a {
+      color: #f0f0f0;
+      text-decoration: none;
+      font-size: 1rem;
+      padding: 8px 15px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    nav a:hover,
+    nav a.active {
+      color: #ff69b4;
+      background: rgba(255, 105, 180, 0.2);
+      transform: scale(1.05);
+    }
+
+    .page {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .page.active {
+      display: block;
+      opacity: 1;
+    }
+
+    /* HOME PAGE */
+    .home-content {
+      text-align: center;
+      padding: 80px 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .home-content h1 {
+      font-size: 3rem;
+      margin-bottom: 30px;
+      text-shadow: 0 0 20px rgba(255, 105, 180, 0.5);
+      animation: fadeInDown 1s ease;
+    }
+
+    .home-content p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: #e0c0ff;
+      margin-bottom: 60px;
+      animation: fadeInUp 1s ease 0.3s backwards;
+    }
+
+    .home-video-wrap {
+      width: min(360px, 84vw);
+      aspect-ratio: 1 / 1;
+      margin: 0 auto 30px;
+      position: relative;
+      filter: drop-shadow(0 0 25px rgba(255, 105, 180, 0.45));
+      animation: fadeInUp 1s ease 0.15s backwards;
+    }
+
+    .home-video-heart {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      clip-path: url(#heartClip);
+      border: 5px solid rgba(255, 105, 180, 0.85);
+      background: rgba(255, 105, 180, 0.12);
+    }
+
+    .quote {
+      font-size: 1.3rem;
+      color: #f8e7ff;
+      font-style: italic;
+      padding: 40px;
+      margin: 60px auto;
+      max-width: 800px;
+      animation: fadeInUp 1s ease 0.6s backwards;
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px;
+      color: #aaa;
+      animation: fadeInUp 1s ease 0.9s backwards;
+    }
+
+    /* MEMORIES PAGE */
+    .memories-page {
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .memories-page h1 {
+      font-size: 2.5rem;
+      margin-bottom: 40px;
+      text-shadow: 0 0 20px rgba(255, 105, 180, 0.5);
+    }
+
+    .memories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .memory-item {
+      background: rgba(255, 105, 180, 0.1);
+      border: 2px solid #ff69b4;
+      border-radius: 10px;
+      padding: 15px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .memory-item:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 0 20px rgba(255, 105, 180, 0.5);
+    }
+
+    .memory-item img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    /* GALLERY PAGE */
+    .gallery-page {
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .gallery-page h1 {
+      font-size: 2.5rem;
+      margin-bottom: 40px;
+      text-shadow: 0 0 20px rgba(255, 105, 180, 0.5);
+    }
+
+    .carousel-container {
+      perspective: 1000px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 400px;
+      position: relative;
+      margin: 40px auto;
+    }
+
+    .carousel-items {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      transform-style: preserve-3d;
+      animation: spin 20s infinite linear;
+    }
+
+    .carousel-item {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .carousel-item img,
+    .carousel-item video {
+      width: 250px;
+      height: 250px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 3px solid #ff69b4;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotateY(0deg) rotateX(10deg);
+      }
+      100% {
+        transform: rotateY(360deg) rotateX(10deg);
+      }
+    }
+
+    /* MESSAGE PAGE */
+    .message-page {
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .message-box {
+      background: rgba(255, 105, 180, 0.1);
+      border: 2px solid #ff69b4;
+      border-radius: 15px;
+      padding: 40px;
+      max-width: 800px;
+      margin: 0 auto;
+      backdrop-filter: blur(10px);
+    }
+
+    .message-box h2 {
+      font-size: 2rem;
+      margin-bottom: 30px;
+      color: #ff69b4;
+      text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+    }
+
+    .message-box p {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: #e0c0ff;
+      text-align: justify;
+      margin-bottom: 15px;
+    }
+
+    /* REASONS PAGE */
+    .reasons-page {
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .reasons-page h1 {
+      font-size: 2.5rem;
+      margin-bottom: 40px;
+      text-shadow: 0 0 20px rgba(255, 105, 180, 0.5);
+    }
+
+    .reasons-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .reason-item {
+      background: rgba(100, 50, 150, 0.3);
+      border: 1px solid #ff69b4;
+      border-radius: 8px;
+      padding: 20px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .reason-item:hover {
+      background: rgba(255, 105, 180, 0.2);
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(255, 105, 180, 0.4);
+    }
+
+    .reason-item p {
+      color: #e0c0ff;
+      font-size: 0.95rem;
+    }
+
+    /* HEART ANIMATION */
+    .heart-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .heart {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background: #ff69b4;
+      clip-path: polygon(50% 95%, 0% 50%, 0% 20%, 30% 0%, 50% 20%, 70% 0%, 100% 20%, 100% 50%);
+      animation: float 6s infinite ease-in-out;
+      opacity: 0.3;
+    }
+
+    .heart:nth-child(1) {
+      left: 10%;
+      top: 20%;
+      animation-delay: 0s;
+    }
+
+    .heart:nth-child(2) {
+      left: 80%;
+      top: 10%;
+      animation-delay: 1.2s;
+    }
+
+    .heart:nth-child(3) {
+      left: 50%;
+      top: 50%;
+      animation-delay: 2.4s;
+    }
+
+    .heart:nth-child(4) {
+      left: 20%;
+      top: 70%;
+      animation-delay: 3.6s;
+    }
+
+    .heart:nth-child(5) {
+      left: 90%;
+      top: 80%;
+      animation-delay: 4.8s;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0) scale(1);
+        opacity: 0.2;
+      }
+      50% {
+        transform: translateY(-50px) scale(1.1);
+        opacity: 0.5;
+      }
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav {
+        gap: 15px;
+        flex-wrap: wrap;
+      }
+
+      nav a {
+        font-size: 0.9rem;
+        padding: 6px 12px;
+      }
+
+      .home-content h1 {
+        font-size: 2rem;
+      }
+
+      .memories-grid,
+      .reasons-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      }
+
+      .message-box {
+        padding: 20px;
+      }
+
+      .message-box h2 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Música de Fondo -->
+  <audio id="backgroundMusic" loop volume="0.3">
+    <source src="Ed Maverick - ensenada, (SPOTISAVER).mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-link active" data-page="home">Inicio</a>
+    <a class="nav-link" data-page="memories">Recuerdos</a>
+    <a class="nav-link" data-page="gallery">Galería</a>
+    <a class="nav-link" data-page="message">Mensaje</a>
+    <a class="nav-link" data-page="reasons">Razones</a>
+  </nav>
+
+  <!-- Hearts Background -->
+  <div class="heart-bg">
+    <span class="heart"></span>
+    <span class="heart"></span>
+    <span class="heart"></span>
+    <span class="heart"></span>
+    <span class="heart"></span>
+  </div>
+
+  <svg aria-hidden="true" width="0" height="0" style="position:absolute;left:-9999px;top:-9999px;">
+    <defs>
+      <clipPath id="heartClip" clipPathUnits="objectBoundingBox">
+        <path d="M0.5,0.18 C0.42,0.06 0.22,0 0.1,0.14 C-0.02,0.28 0.01,0.51 0.17,0.68 L0.5,1 L0.83,0.68 C0.99,0.51 1.02,0.28 0.9,0.14 C0.78,0 0.58,0.06 0.5,0.18 Z" />
+      </clipPath>
+    </defs>
+  </svg>
+
+  <!-- HOME PAGE -->
+  <div id="home" class="page active">
+    <div class="home-content">
+      <h1>¡Bienvenida, Mi Amor lizzy! ❤️</h1>
+      <div class="home-video-wrap">
+        <video class="home-video-heart" src="videollizy.mp4" autoplay muted loop playsinline></video>
+      </div>
+      <p>Este sitio web es para nuestros recuerdos de cada dia que pasamos juntos, y cómo superamos cada problema que encontramos. En los altibajos, seguimos juntos, siempre más fuertes.</p>
+      
+      <div class="quote">
+        "El amor no se trata de cuántos días o meses hayas estado junto a alguien, se trata de cuánto te amas el uno al otro cada día." 💞
+      </div>
+
+      <footer>
+        <p>Por Siempre y Siempre, Tuyo ❤️</p>
+      </footer>
+    </div>
+  </div>
+
+  <!-- MEMORIES PAGE -->
+  <div id="memories" class="page">
+    <div class="memories-page">
+      <h1>Nuestros Recuerdos 💞</h1>
+      <div class="memories-grid">
+        <div class="memory-item">
+          <img src="WhatsApp Image 2026-05-02 at 8.44.47 PM.jpeg" alt="Recuerdo 1">
+          <p>Recuerdo 1</p>
+        </div>
+        <div class="memory-item">
+          <img src="WhatsApp Image 2026-05-02 at 8.46.02 PM.jpeg" alt="Recuerdo 2">
+          <p>Recuerdo 2</p>
+        </div>
+        <div class="memory-item">
+          <img src="WhatsApp Image 2026-05-02 at 8.46.02 PM (1).jpeg" alt="Recuerdo 3">
+          <p>Recuerdo 3</p>
+        </div>
+        <div class="memory-item">
+          <img src="WhatsApp Image 2026-05-02 at 8.46.02 PM (2).jpeg" alt="Recuerdo 4">
+          <p>Recuerdo 4</p>
+        </div>
+        <div class="memory-item">
+          <img src="WhatsApp Image 2026-05-02 at 8.46.02 PM (3).jpeg" alt="Recuerdo 5">
+          <p>Recuerdo 5</p>
+        </div>
+        <div class="memory-item">
+          <img src="WhatsApp Image 2026-05-02 at 8.46.02 PM (4).jpeg" alt="Recuerdo 6">
+          <p>Recuerdo 6</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GALLERY PAGE -->
+  <div id="gallery" class="page">
+    <div class="gallery-page">
+      <h1>Galería 🌸</h1>
+      <div class="carousel-container">
+        <div class="carousel-items">
+          <div class="carousel-item" style="transform: rotateY(0deg) translateZ(300px);">
+            <img src="WhatsApp Image 2026-05-02 at 8.46.02 PM (5).jpeg" alt="Foto 1">
+          </div>
+          <div class="carousel-item" style="transform: rotateY(72deg) translateZ(300px);">
+            <img src="WhatsApp Image 2026-05-02 at 8.44.47 PM.jpeg" alt="Foto 2">
+          </div>
+          <div class="carousel-item" style="transform: rotateY(144deg) translateZ(300px);">
+            <img src="WhatsApp Image 2026-05-02 at 8.46.02 PM.jpeg" alt="Foto 3">
+          </div>
+          <div class="carousel-item" style="transform: rotateY(216deg) translateZ(300px);">
+            <img src="WhatsApp Image 2026-05-02 at 8.46.02 PM (1).jpeg" alt="Foto 4">
+          </div>
+          <div class="carousel-item" style="transform: rotateY(288deg) translateZ(300px);">
+            <img src="WhatsApp Image 2026-05-02 at 8.46.02 PM (2).jpeg" alt="Foto 5">
+          </div>
+        </div>
+      </div>
+      </div>
+  </div>
+
+  <!-- MESSAGE PAGE -->
+  <div id="message" class="page">
+    <div class="message-page">
+      <div class="message-box">
+        <p><strong>Mi amor,</strong></p>
+        <p>Sé que a veces no he sido el mejor para ti. Disculpa si a veces me comporto de mal humor, disculpa si no siempre doy lo mejor de mí, disculpa por mis errores. Pero quiero que sepas que sigo luchando por nosotros, que te amo más cada día.</p>
+        <p>sabes cuánto te amo, cuánto te cuido, cuánto me importas para mí. Por favor sé paciente conmigo mientras me esfuerzo por darte todo lo que necesitas. En este momento, esta es la única manera que sé para demostrarte mi amor: haciendo lo que amo.</p>
+        <p>"¡Me gustaría poder tener cinco vidas! Entonces podría haber nacido en cinco ciudades, comer hasta llenar mi estómago cinco veces, tener cinco carreras diferentes... y, cinco veces, enamorarme de la misma persona."</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- REASONS PAGE -->
+  <div id="reasons" class="page">
+    <div class="reasons-page">
+      <h1>100 razones por las que te amo ❤️</h1>
+      <div class="reasons-grid">
+        <div class="reason-item"><p>Razón 1: Tu sonrisa</p></div>
+        <div class="reason-item"><p>Razón 2: Tus ojos</p></div>
+        <div class="reason-item"><p>Razón 3: Tu cabello</p></div>
+        <div class="reason-item"><p>Razón 4: Tu nariz</p></div>
+        <div class="reason-item"><p>Razón 5: Tus besos</p></div>
+        <div class="reason-item"><p>Razón 6: Tu nombre</p></div>
+        <div class="reason-item"><p>Razón 7: Tu apodo</p></div>
+        <div class="reason-item"><p>Razón 8: Tu estilo</p></div>
+        <div class="reason-item"><p>Razón 9: Tu bondad</p></div>
+        <div class="reason-item"><p>Razón 10: Tu paciencia</p></div>
+        <div class="reason-item"><p>Razón 11: Tu forma de tratarme</p></div>
+        <div class="reason-item"><p>Razón 12: Tu voz</p></div>
+        <div class="reason-item"><p>Razón 13: Tu altura</p></div>
+        <div class="reason-item"><p>Razón 14: Tu olor</p></div>
+        <div class="reason-item"><p>Razón 15: Tus bromas</p></div>
+        <div class="reason-item"><p>Razón 16: Tus historias</p></div>
+        <div class="reason-item"><p>Razón 17: Tu perdón</p></div>
+        <div class="reason-item"><p>Razón 18: Tu paciencia conmigo</p></div>
+        <div class="reason-item"><p>Razón 19: Tus hábitos</p></div>
+        <div class="reason-item"><p>Razón 20: Tus talentos</p></div>
+        <div class="reason-item"><p>Razón 21: Tu inteligencia</p></div>
+        <div class="reason-item"><p>Razón 22: Tu fortaleza</p></div>
+        <div class="reason-item"><p>Razón 23: Tu pasión</p></div>
+        <div class="reason-item"><p>Razón 24: Tu lado misterioso</p></div>
+        <div class="reason-item"><p>Razón 25: Tu lado divertido</p></div>
+        <div class="reason-item"><p>Razón 26: Tu estilo personal</p></div>
+        <div class="reason-item"><p>Razón 27: Tu dulzura</p></div>
+        <div class="reason-item"><p>Razón 28: Tus pestañas</p></div>
+        <div class="reason-item"><p>Razón 29: Tu honestidad</p></div>
+        <div class="reason-item"><p>Razón 30: Tu deportividad</p></div>
+        <div class="reason-item"><p>Razón 31: Tus defectos</p></div>
+        <div class="reason-item"><p>Razón 32: Tu autenticidad</p></div>
+        <div class="reason-item"><p>Razón 33: Tu lado tierno</p></div>
+        <div class="reason-item"><p>Razón 34: Tu singularidad</p></div>
+        <div class="reason-item"><p>Razón 35: Tus esperanzas</p></div>
+        <div class="reason-item"><p>Razón 36: Tus metas</p></div>
+        <div class="reason-item"><p>Razón 37: Tu perspectiva</p></div>
+        <div class="reason-item"><p>Razón 38: Tu ayuda</p></div>
+        <div class="reason-item"><p>Razón 39: Tu diversión</p></div>
+        <div class="reason-item"><p>Razón 40: Tu música</p></div>
+        <div class="reason-item"><p>Razón 41: Tu película favorita</p></div>
+        <div class="reason-item"><p>Razón 42: Tu flor favorita</p></div>
+        <div class="reason-item"><p>Razón 43: Tu comida favorita</p></div>
+        <div class="reason-item"><p>Razón 44: Tu bebida favorita</p></div>
+        <div class="reason-item"><p>Razón 45: Tu color favorito</p></div>
+        <div class="reason-item"><p>Razón 46: La forma en que hablas conmigo</p></div>
+        <div class="reason-item"><p>Razón 47: La forma en que me tratas</p></div>
+        <div class="reason-item"><p>Razón 48: La forma en que me haces sentir especial</p></div>
+        <div class="reason-item"><p>Razón 49: La forma en que alegras a otros</p></div>
+        <div class="reason-item"><p>Razón 50: La forma en que me das lo que necesito</p></div>
+        <div class="reason-item"><p>Razón 51: Tus abrazos</p></div>
+        <div class="reason-item"><p>Razón 52: Tus besos</p></div>
+        <div class="reason-item"><p>Razón 53: La forma en que me cuidas</p></div>
+        <div class="reason-item"><p>Razón 54: La forma en que me apoyas</p></div>
+        <div class="reason-item"><p>Razón 55: La forma en que me haces reír</p></div>
+        <div class="reason-item"><p>Razón 56: La forma en que me haces sentir guapo</p></div>
+        <div class="reason-item"><p>Razón 57: Tus cumplidos</p></div>
+        <div class="reason-item"><p>Razón 58: El tiempo que pasamos juntos</p></div>
+        <div class="reason-item"><p>Razón 59: La forma en que manejas las cosas</p></div>
+        <div class="reason-item"><p>Razón 60: La forma en que superas tus problemas</p></div>
+        <div class="reason-item"><p>Razón 61: Lo emocionada que estás de verme</p></div>
+        <div class="reason-item"><p>Razón 62: La forma en que me extrañas</p></div>
+        <div class="reason-item"><p>Razón 63: La forma en que me alimentas</p></div>
+        <div class="reason-item"><p>Razón 64: La fuerza que me das</p></div>
+        <div class="reason-item"><p>Razón 65: Tus consejos</p></div>
+        <div class="reason-item"><p>Razón 66: Tu ayuda constante</p></div>
+        <div class="reason-item"><p>Razón 67: La forma en que me entiendes</p></div>
+        <div class="reason-item"><p>Razón 68: Tu paciencia sin límites</p></div>
+        <div class="reason-item"><p>Razón 69: La forma en que nos reímos juntos</p></div>
+        <div class="reason-item"><p>Razón 70: La forma en que me corriges con amor</p></div>
+        <div class="reason-item"><p>Razón 71: La forma en que me haces sonrojar</p></div>
+        <div class="reason-item"><p>Razón 72: La forma en que me avergüenzas de forma linda</p></div>
+        <div class="reason-item"><p>Razón 73: Tu disciplina</p></div>
+        <div class="reason-item"><p>Razón 74: Que seas somnoliento</p></div>
+        <div class="reason-item"><p>Razón 75: La forma en que me escribes</p></div>
+        <div class="reason-item"><p>Razón 76: Tu confianza en ti mismo</p></div>
+        <div class="reason-item"><p>Razón 77: Tu determinación</p></div>
+        <div class="reason-item"><p>Razón 78: La forma en que me escuchas</p></div>
+        <div class="reason-item"><p>Razón 79: La forma en que me enseñas</p></div>
+        <div class="reason-item"><p>Razón 80: Tu autenticidad</p></div>
+        <div class="reason-item"><p>Razón 81: La forma en que me abrazas</p></div>
+        <div class="reason-item"><p>Razón 82: La forma en que cuidas nuestra relación</p></div>
+        <div class="reason-item"><p>Razón 83: La forma en que tratas a tu familia</p></div>
+        <div class="reason-item"><p>Razón 84: La forma en que te maquillas</p></div>
+        <div class="reason-item"><p>Razón 85: La forma en que me admiras</p></div>
+        <div class="reason-item"><p>Razón 86: Las razones que me das para vivir</p></div>
+        <div class="reason-item"><p>Razón 87: La esperanza que me das</p></div>
+        <div class="reason-item"><p>Razón 88: La forma en que crees en mí</p></div>
+        <div class="reason-item"><p>Razón 89: La forma en que subes mi confianza</p></div>
+        <div class="reason-item"><p>Razón 90: La forma en que me reconfortas</p></div>
+        <div class="reason-item"><p>Razón 91: La forma en que hablas de nuestro futuro</p></div>
+        <div class="reason-item"><p>Razón 92: Que quieras ser mi esposa</p></div>
+        <div class="reason-item"><p>Razón 93: La forma en que te enojas</p></div>
+        <div class="reason-item"><p>Razón 94: La forma en que te preocupas por mí</p></div>
+        <div class="reason-item"><p>Razón 95: La forma en que me haces sentir afortunado</p></div>
+        <div class="reason-item"><p>Razón 96: Lo cómodo que me siento contigo</p></div>
+        <div class="reason-item"><p>Razón 97: La forma en que tratas a tus hermanas</p></div>
+        <div class="reason-item"><p>Razón 98: El respeto que tienes por mi familia</p></div>
+        <div class="reason-item"><p>Razón 99: Tu cuerpo</p></div>
+        <div class="reason-item"><p>Razón 100: Tú, la forma en que existes ✨</p></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Reproducir música de fondo
+    const backgroundMusic = document.getElementById('backgroundMusic');
+    backgroundMusic.volume = 0.3;
+
+    // Intenta reproducir automáticamente
+    const playMusic = () => {
+      backgroundMusic.play().catch(err => {
+        console.log('Autoplay bloqueado, esperando interacción del usuario');
+      });
+    };
+
+    // Reproducir cuando el usuario interactúe
+    document.addEventListener('click', () => {
+      if (backgroundMusic.paused) {
+        playMusic();
+      }
+    }, { once: true });
+
+    // Intenta reproducir al cargar
+    setTimeout(playMusic, 500);
+
+    // Navigation functionality
+    const navLinks = document.querySelectorAll('.nav-link');
+    const pages = document.querySelectorAll('.page');
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const pageId = link.getAttribute('data-page');
+        
+        // Remove active class from all nav links and pages
+        navLinks.forEach(l => l.classList.remove('active'));
+        pages.forEach(p => p.classList.remove('active'));
+        
+        // Add active class to clicked link and corresponding page
+        link.classList.add('active');
+        document.getElementById(pageId).classList.add('active');
+      });
+    });
+
+    // Add some interactivity to reason items
+    const reasonItems = document.querySelectorAll('.reason-item');
+    reasonItems.forEach((item, index) => {
+      item.addEventListener('click', () => {
+        item.style.background = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.2)`;
+        setTimeout(() => {
+          item.style.background = 'rgba(100, 50, 150, 0.3)';
+        }, 1000);
+      });
+    });
+
+    // Add hover effect to memory items
+    const memoryItems = document.querySelectorAll('.memory-item');
+    memoryItems.forEach(item => {
+      item.addEventListener('mouseenter', () => {
+        item.style.animation = 'pulse 0.6s ease-in-out';
+      });
+    });
+  </script>
+</body>
+</html>
